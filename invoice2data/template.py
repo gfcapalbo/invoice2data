@@ -27,6 +27,9 @@ OPTIONS_DEFAULT = {
     'line_separator': r'\n',
 }
 
+# add to this lambda if you want more fields parsed as date field
+is_date = lambda x: x.startswith('date') or x == 'requested_date'
+
 def read_templates(folder):
     """
     Load yaml templates from template folder. Return list of dicts.
@@ -167,7 +170,7 @@ class InvoiceTemplate(OrderedDict):
                     res_find = re.findall(v, optimized_str)
                 if res_find:
                     logger.debug("res_find=%s", res_find)
-                    if k.startswith('date'):
+                    if is_date(k):
                         raw_date = res_find[0]
                         output[k] = dateparser.parse(
                             raw_date, date_formats=self.options['date_formats'],
